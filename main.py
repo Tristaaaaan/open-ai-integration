@@ -4,6 +4,8 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivymd.app import MDApp
 import openai
 import threading
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
 
 
 class FirstWindow(Screen):
@@ -11,9 +13,12 @@ class FirstWindow(Screen):
     Builder.load_file('firstwindow.kv')
 
     def generate_text(self):
-
-        openai.api_key = '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'
-        threading.Thread(target=self.trigger_question).start()
+        if not self.ids.api_key_ai.text:
+            self.error_dialog(
+                message="Sorry, the application failed to establish a connection. Please try again.")
+        else:
+            openai.api_key = self.ids.api_key_ai.text
+            threading.Thread(target=self.trigger_question).start()
 
     def trigger_question(self):
 
@@ -34,6 +39,25 @@ class FirstWindow(Screen):
     def clear(self):
         self.ids.open_ai_content.text = 'Open AI Content'
         self.ids.heard_speech.text = 'Inquiry'
+
+    def error_dialog(self, message):
+
+        close_button = MDFlatButton(
+            text='CLOSE',
+            text_color=[0, 0, 0, 1],
+            on_release=self.close_dialog,
+        )
+        self.dialog = MDDialog(
+            title='[color=#FF0000]Ooops![/color]',
+            text=message,
+            buttons=[close_button],
+            auto_dismiss=False
+        )
+        self.dialog.open()
+
+    # Close Dialog
+    def close_dialog(self, obj):
+        self.dialog.dismiss()
 
 
 class WindowManager(ScreenManager):
