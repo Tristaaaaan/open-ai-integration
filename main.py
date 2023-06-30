@@ -11,6 +11,8 @@ class FirstWindow(Screen):
     Builder.load_file('firstwindow.kv')
 
     def generate_text(self):
+
+        openai.api_key = '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'
         threading.Thread(target=self.trigger_question).start()
 
     def trigger_question(self):
@@ -42,11 +44,6 @@ class rawApp(MDApp):
 
     def build(self):
         return WindowManager()
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        openai.api_key = "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"
 
 
 if __name__ == '__main__':
